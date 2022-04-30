@@ -1,0 +1,12 @@
+{
+  "1337": {
+    "FundMe": [
+      "0xA945444192F2963286754E2A6c5904ef390451D7",
+      "0x75F6f53D43Eb46A29AA48Aa8dbd684b41bcc1642",
+      "0x9C4Ed1C017EbF02bC5d1652B7d407Ae1C6Fede56"
+    ],
+    "MockV3Aggregator": [
+      "0x6c7E3deDCdB32C09bC093c267CeCf61a4BAe697c"
+    ]
+  }
+}
