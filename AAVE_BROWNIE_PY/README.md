@@ -4,3 +4,8 @@
 4. Repay everything back 
 
 paraswap, uniswap
+
+TESTING:
+ Integration Test: Kovan
+ Unit tests: Mainnet-fork
+ 
