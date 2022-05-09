@@ -1,6 +1,17 @@
 dependencies:
   - OpenZeppelin/openzeppelin-contracts@4.2.0
+  - smartcontractkit/chainlink-brownie-contracts@0.2.1
 compiler:
   solc:
     remappings:
       - '@openzeppelin=OpenZeppelin/openzeppelin-contracts@4.2.0'
+      - '@chainlink=smartcontractkit/chainlink-brownie-contracts@0.2.1'
+networks:
+  development:
+    verify: False
+  ganache: 
+    verify: False
+  kovan: 
+    verify: True
+    weth_token: '0xd0a1e359811322d97991e03f86a0c30c2cf029c'
+    fau_token: '0x743455077a8d9A651A0De75E4E4B31221ed045E9'
