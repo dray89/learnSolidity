@@ -2,14 +2,15 @@ from brownie import (
     network,
     accounts,
     config,
-    LinkToken,
+    interface,
     MockV3Aggregator,
-    MockOracle,
-    VRFCoordinatorMock,
-    Contract,
-    web3
+    MockWETH, 
+    MockDAI,
+    Contract
 )
 import time
+
+INITIAL_PRICE_FEED_VALUE = 2000000000000000000
 
 NON_FORKED_LOCAL_BLOCKCHAIN_ENVIRONMENTS = ["hardhat", "development", "ganache"]
 LOCAL_BLOCKCHAIN_ENVIRONMENTS = NON_FORKED_LOCAL_BLOCKCHAIN_ENVIRONMENTS + [
@@ -21,7 +22,10 @@ LOCAL_BLOCKCHAIN_ENVIRONMENTS = NON_FORKED_LOCAL_BLOCKCHAIN_ENVIRONMENTS + [
 BLOCK_CONFIRMATIONS_FOR_VERIFICATION = 6
 
 contract_to_mock = {
-    "eth_usd_price_feed": MockV3Aggregator
+    "eth_usd_price_feed": MockV3Aggregator,
+    'dai_usd_price_feed': MockV3Aggregator,
+    'fau_token': MockDAI,
+    'weth_token': MockWETH
 }
 
 DECIMALS = 18
@@ -76,44 +80,26 @@ def get_contract(contract_name):
     return contract
 
 
-def fund_with_link(
-    contract_address, account=None, link_token=None, amount=1000000000000000000
-):
-    account = account if account else get_account()
-    link_token = link_token if link_token else get_contract("link_token")
-    ### Keep this line to show how it could be done without deploying a mock
-    # tx = interface.LinkTokenInterface(link_token.address).transfer(
-    #     contract_address, amount, {"from": account}
-    # )
-    tx = link_token.transfer(contract_address, amount, {"from": account})
-    print("Funded {}".format(contract_address))
-    return tx
-
-
-def deploy_mocks(decimals=DECIMALS, initial_value=INITIAL_VALUE):
+def deploy_mocks(decimals=DECIMALS, initial_value=INITIAL_PRICE_FEED_VALUE):
     """
     Use this script if you want to deploy mocks to a testnet
     """
     print(f"The active network is {network.show_active()}")
     print("Deploying Mocks...")
     account = get_account()
-    print("Deploying Mock Link Token...")
-    link_token = LinkToken.deploy({"from": account})
-    print("Deploying Mock Price Feed...")
+    #print("Deploying Mock Link Token...")
+    #link_token = LinkToken.deploy({"from": account})
+    #print("Deploying Mock Price Feed...")
     mock_price_feed = MockV3Aggregator.deploy(
         decimals, initial_value, {"from": account}
     )
     print(f"Deployed to {mock_price_feed.address}")
-    print("Deploying Mock VRFCoordinator...")
-    mock_vrf_coordinator = VRFCoordinatorMock.deploy(
-        link_token.address, {"from": account}
-    )
-    print(f"Deployed to {mock_vrf_coordinator.address}")
-
-    print("Deploying Mock Oracle...")
-    mock_oracle = MockOracle.deploy(link_token.address, {"from": account})
-    print(f"Deployed to {mock_oracle.address}")
-    print("Mocks Deployed!")
+    print("deploying mock dai")
+    dai_token = MockDAI.deploy({'from':account})
+    print(f'deployed to {dai_token.address}')
+    print('deploying mock WETH')
+    weth_token = MockWETH.deploy({'from': account})
+    print(f'deployed to {weth_token.address}')
 
 
 def listen_for_event(brownie_contract, event, timeout=200, poll_interval=2):
